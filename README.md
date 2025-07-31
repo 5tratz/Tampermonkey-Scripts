@@ -1,1 +1,1 @@
-All my scripts here are published on Greasy Fork: https://greasyfork.org/en/users/1500192-ryanm
+All my scripts here are published on ([Greasy Fork](https://greasyfork.org/en/users/1500192-ryanm)).
