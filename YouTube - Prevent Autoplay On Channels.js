@@ -1,18 +1,16 @@
 // ==UserScript==
-// @name         Prevent Autoplay On YouTube Channels
+// @name         YouTube - Prevent Autoplay On Channels
 // @description  This script prevents autoplayed videos on YouTube channel profile pages.
 // @namespace    http://tampermonkey.net/
 // @icon         https://cdn-icons-png.flaticon.com/64/2504/2504965.png
-// @version      0.0.5
+// @version      0.0.8
 // @author       rxm
 // @match        https://www.youtube.com/@*/featured
 // @match        https://www.youtube.com/@*
 // @match        https://www.youtube.com/*
 // @exclude      https://www.youtube.com/watch?v=*
 // @license      MIT
-// @grant        none
-// @downloadURL  
-// @updateURL    
+// @grant        none  
 // ==/UserScript==
 
 // Custom urlchange event (used to monitor URL changes)

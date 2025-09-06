@@ -1,16 +1,14 @@
 // ==UserScript==
-// @name         Small As Before Thumbnails
+// @name         YouTube - Small As Before Thumbnails
 // @description  Shrink large YouTube thumbnails & adjust layout
 // @namespace    http://tampermonkey.net/
 // @icon         https://cdn-icons-png.flaticon.com/64/2504/2504965.png
-// @version      0.0.1
+// @version      0.0.4
 // @author       rxm
 // @match        https://www.youtube.com/*
 // @license      MIT
 // @grant        none
 // @run-at       document-start
-// @downloadURL  
-// @updateURL
 // ==/UserScript==
 
 (function() {
