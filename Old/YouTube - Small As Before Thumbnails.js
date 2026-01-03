@@ -69,17 +69,16 @@
                 max-width: 100% !important;
             }
 
-            /* Ensure all thumbnails have consistent size */
-            ytd-thumbnail.ytd-rich-grid-media,
-            ytd-thumbnail.ytd-video-renderer,
-            ytd-thumbnail.ytd-rich-item-renderer {
+            /* Ensure all thumbnails have consistent size - HOME PAGE ONLY */
+            ytd-rich-grid-renderer ytd-thumbnail,
+            ytd-rich-item-renderer ytd-thumbnail {
                 width: 246px !important;
                 height: 138px !important;
                 aspect-ratio: 16/9 !important;
             }
 
-            /* Hide channel avatar image from video grid */
-            #avatar-link { 
+            /* Hide channel avatar image from video grid - HOME PAGE ONLY */
+            ytd-rich-grid-renderer #avatar-link { 
                 display: none !important; 
             }
 

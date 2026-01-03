@@ -3,7 +3,7 @@
 // @description  Prevent Yahoo from automatically refreshing the page
 // @namespace    http://tampermonkey.net/
 // @icon         https://cdn-icons-png.flaticon.com/128/2504/2504961.png
-// @version      0.0.4
+// @version      0.0.5
 // @author       rxm
 // @match        https://uk.yahoo.com/*
 // @match        https://www.yahoo.com/*
@@ -18,23 +18,15 @@
     const win = unsafeWindow;
 
     /* --------------------------------------------------
-       1. LIE ABOUT VISIBILITY (CRITICAL)
+       1. LIE ABOUT VISIBILITY (AUTO-REFRESH FIX)
     -------------------------------------------------- */
 
-    Object.defineProperty(document, 'hidden', {
-        get: () => false
-    });
-
-    Object.defineProperty(document, 'visibilityState', {
-        get: () => 'visible'
-    });
-
-    Object.defineProperty(document, 'webkitVisibilityState', {
-        get: () => 'visible'
-    });
+    Object.defineProperty(document, 'hidden', { get: () => false });
+    Object.defineProperty(document, 'visibilityState', { get: () => 'visible' });
+    Object.defineProperty(document, 'webkitVisibilityState', { get: () => 'visible' });
 
     /* --------------------------------------------------
-       2. BLOCK REGISTRATION OF VISIBILITY EVENTS
+       2. BLOCK VISIBILITY / FOCUS LISTENERS
     -------------------------------------------------- */
 
     const blockedEvents = new Set([
@@ -42,9 +34,7 @@
         'pageshow',
         'pagehide',
         'freeze',
-        'resume',
-        'focus',
-        'blur'
+        'resume'
     ]);
 
     const originalAddEventListener = EventTarget.prototype.addEventListener;
@@ -58,12 +48,10 @@
     };
 
     /* --------------------------------------------------
-       3. HARD-BLOCK ALL PROGRAMMATIC NAVIGATION
+       3. HARD-BLOCK PROGRAMMATIC PAGE RELOADS
     -------------------------------------------------- */
 
-    const block = (name) => () => {
-        console.log('[TM] Blocked', name);
-    };
+    const block = name => () => console.log('[TM] Blocked', name);
 
     win.location.reload = block('location.reload');
 
@@ -80,7 +68,7 @@
     };
 
     /* --------------------------------------------------
-       4. PREVENT BFCache REHYDRATION TRIGGERS
+       4. PREVENT BFCache REHYDRATION
     -------------------------------------------------- */
 
     window.addEventListener('pageshow', e => {
@@ -90,34 +78,37 @@
     }, true);
 
     /* --------------------------------------------------
-       5. LOCK & RESTORE SCROLL POSITION (THE REAL FIX)
+       5. FORCE YAHOO HOMEPAGE CAROUSEL INTO PAUSED STATE
+       (THIS IS THE KEY FIX)
     -------------------------------------------------- */
 
-    let lastScrollY = 0;
+    function forcePauseYahooCarousel() {
+        document.querySelectorAll('button').forEach(btn => {
+            const label =
+                (btn.getAttribute('aria-label') || btn.innerText || '')
+                    .toLowerCase();
 
-    // Track scroll position continuously
-    win.addEventListener('scroll', () => {
-        lastScrollY = win.scrollY;
-    }, { passive: true });
+            // Yahoo exposes Pause/Play via accessible buttons
+            if (label.includes('pause')) {
+                btn.click();
+                console.log('[TM] Forced Yahoo carousel pause');
+            }
+        });
+    }
 
-    // Restore scroll position if Yahoo resets it
-    const restoreScroll = () => {
-        if (win.scrollY < lastScrollY) {
-            win.scrollTo(0, lastScrollY);
-            console.log('[TM] Restored scroll position:', lastScrollY);
-        }
-    };
+    // Pause once DOM exists
+    window.addEventListener('DOMContentLoaded', forcePauseYahooCarousel);
 
-    // Run on DOM changes (Yahoo re-renders on tab return)
-    const scrollObserver = new MutationObserver(restoreScroll);
-    scrollObserver.observe(document.documentElement, {
+    // Pause again when tab regains focus (Yahoo resumes here)
+    window.addEventListener('focus', forcePauseYahooCarousel, true);
+
+    // Pause again if Yahoo rebuilds modules
+    const pauseObserver = new MutationObserver(forcePauseYahooCarousel);
+    pauseObserver.observe(document.documentElement, {
         childList: true,
         subtree: true
     });
 
-    // Periodic safety check
-    setInterval(restoreScroll, 300);
-
-    console.log('[TM] Yahoo auto-refresh fully disabled');
+    console.log('[TM] Yahoo auto-refresh disabled + carousel forced paused');
 
 })();
