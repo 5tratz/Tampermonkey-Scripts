@@ -11,6 +11,8 @@
 // @exclude      https://www.youtube.com/watch?v=*
 // @license      MIT
 // @grant        none  
+// @downloadURL https://update.greasyfork.org/scripts/544198/YouTube%20-%20Prevent%20Autoplay%20On%20Channels.user.js
+// @updateURL https://update.greasyfork.org/scripts/544198/YouTube%20-%20Prevent%20Autoplay%20On%20Channels.meta.js
 // ==/UserScript==
 
 // Custom urlchange event (used to monitor URL changes)
