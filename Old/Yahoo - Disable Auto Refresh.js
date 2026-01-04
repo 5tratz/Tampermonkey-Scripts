@@ -3,8 +3,9 @@
 // @description  Prevent Yahoo from automatically refreshing the page
 // @namespace    http://tampermonkey.net/
 // @icon         https://cdn-icons-png.flaticon.com/128/2504/2504961.png
+// @supportURL   https://github.com/5tratz/Tampermonkey-Scripts/issues
 // @version      0.0.5
-// @author       rxm
+// @author       5tratz
 // @match        https://uk.yahoo.com/*
 // @match        https://www.yahoo.com/*
 // @license      MIT

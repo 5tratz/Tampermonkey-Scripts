@@ -1,10 +1,11 @@
 // ==UserScript==
-// @name         YouTube - Proper Description (2025 Fix)
+// @name         YouTube - Proper Description
 // @description  Forces the video description to live below the video with a reliable open/close toggle. Updated for modern YouTube DOM (no yt.msgs_ dependency).
 // @namespace    http://tampermonkey.net/
 // @icon         https://cdn-icons-png.flaticon.com/64/2504/2504965.png
-// @version      0.0.4
-// @author       rxm
+// @supportURL   https://github.com/5tratz/Tampermonkey-Scripts/issues
+// @version      0.0.6
+// @author       5tratz
 // @match        *://www.youtube.com/watch*
 // @license      MIT
 // @grant        none

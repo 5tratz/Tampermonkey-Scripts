@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         YouTube - Shorts Blocker TEST
+// @name         YouTube - Shorts Blocker [BETA]
 // @description  Removes ALL YouTube Shorts from every page: homepage, sidebar, search results, channels, subscriptions, everywhere!
 // @namespace    http://tampermonkey.net/
 // @icon         https://cdn-icons-png.flaticon.com/64/2504/2504965.png

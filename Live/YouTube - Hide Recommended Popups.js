@@ -3,8 +3,9 @@
 // @description  Removes experimental and featured recommendation sections from YouTube
 // @namespace    http://tampermonkey.net/
 // @icon         https://cdn-icons-png.flaticon.com/64/2504/2504965.png
-// @version      0.0.7
-// @author       rxm
+// @supportURL   https://github.com/5tratz/Tampermonkey-Scripts/issues
+// @version      0.0.8
+// @author       5tratz
 // @match        https://www.youtube.com/*
 // @license      MIT
 // @grant        none

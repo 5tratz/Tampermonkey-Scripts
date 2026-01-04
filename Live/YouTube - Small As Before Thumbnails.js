@@ -3,8 +3,9 @@
 // @description  Shrink large YouTube thumbnails & adjust layout
 // @namespace    http://tampermonkey.net/
 // @icon         https://cdn-icons-png.flaticon.com/64/2504/2504965.png
-// @version      0.0.8
-// @author       rxm
+// @supportURL   https://github.com/5tratz/Tampermonkey-Scripts/issues
+// @version      0.1.1
+// @author       5tratz
 // @match        https://www.youtube.com/*
 // @license      MIT
 // @grant        GM_getValue
@@ -20,15 +21,15 @@
 
     // Configuration with defaults
     const config = {
-        thumbnailWidth: GM_getValue('thumbnailWidth', 210),
-        thumbnailHeight: GM_getValue('thumbnailHeight', 118),
+        thumbnailWidth: GM_getValue('thumbnailWidth', 246),
+        thumbnailHeight: GM_getValue('thumbnailHeight', 138),
         gapSize: GM_getValue('gapSize', 8),
         thumbnailsPerRow: GM_getValue('thumbnailsPerRow', 5)
     };
 
     // Register menu commands for configuration
     GM_registerMenuCommand('Configure Thumbnail Layout', configureLayout);
-    GM_registerMenuCommand('Reset to Defaults', resetToDefaults);
+    GM_registerMenuCommand('🔄 Reset to Defaults', resetToDefaults);
 
     // Function to show configuration dialog
     function configureLayout() {
@@ -67,8 +68,9 @@
 
     // Function to reset to defaults
     function resetToDefaults() {
-        config.thumbnailWidth = 210;
-        config.thumbnailHeight = 118;
+        // Your preferred defaults
+        config.thumbnailWidth = 246;
+        config.thumbnailHeight = 138; // 246 * 9/16 = 138.375 ≈ 138
         config.gapSize = 8;
         config.thumbnailsPerRow = 5;
 
@@ -137,6 +139,16 @@
                 gap: ${config.gapSize}px !important;
                 width: 100% !important;
                 max-width: 100% !important;
+                justify-content: center !important;
+                grid-auto-flow: row !important;
+            }
+
+            /* FIX: Ensure main grid container wraps properly */
+            ytd-rich-grid-renderer #contents {
+                display: grid !important;
+                grid-template-columns: repeat(auto-fill, minmax(${calculatedWidth}px, 1fr)) !important;
+                justify-content: center !important;
+                grid-auto-flow: row !important;
             }
 
             /* Ensure all thumbnails have consistent size - HOME PAGE ONLY */
@@ -193,6 +205,15 @@
             #primary.ytd-browse {
                 padding-left: 0 !important;
                 padding-right: 0 !important;
+            }
+
+            /* FIX: Additional selector for different YouTube layouts */
+            ytd-rich-grid-renderer[use-prominent-thumbs] #contents,
+            ytd-rich-grid-renderer[use-spring-loading] #contents {
+                display: grid !important;
+                grid-template-columns: repeat(auto-fill, minmax(${calculatedWidth}px, 1fr)) !important;
+                justify-content: center !important;
+                grid-auto-flow: row !important;
             }
         `;
     }
