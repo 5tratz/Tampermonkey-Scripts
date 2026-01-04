@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Yahoo - Disable Auto Refresh TEST
+// @name         Yahoo - Disable Auto Refresh
 // @description  Prevent Yahoo from automatically refreshing the page
 // @namespace    http://tampermonkey.net/
 // @icon         https://cdn-icons-png.flaticon.com/128/2504/2504961.png
