@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         [TEST] YouTube - Downloader
+// @name         YouTube - Downloader
 // @description  Download YouTube videos with advanced options and features.
 // @namespace    http://tampermonkey.net/
 // @icon         https://cdn-icons-png.flaticon.com/64/2504/2504965.png
