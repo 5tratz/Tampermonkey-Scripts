@@ -4,7 +4,7 @@
 // @namespace    http://tampermonkey.net/
 // @icon         https://cdn-icons-png.flaticon.com/64/2504/2504965.png
 // @supportURL   https://github.com/5tratz/Tampermonkey-Scripts/issues
-// @version      0.0.7
+// @version      0.0.8
 // @author       5tratz
 // @match        https://www.youtube.com/*
 // @license      MIT
@@ -20,6 +20,7 @@
 
     /* ---------------------------------------------------
        CSS FIX (prevents vertical stacking + flicker)
+       EXACTLY AS YOU HAD IT
     --------------------------------------------------- */
     const style = document.createElement('style');
     style.textContent = `
@@ -34,12 +35,14 @@
 
     /* ---------------------------------------------------
        TEXT MATCHING
+       ADDED "Latest from" to block YouTube posts
     --------------------------------------------------- */
     const BLOCKED_TEXT = [
         'explore more topics',
         'shorts',
         'people also watched',
-        'for you'
+        'for you',
+        'latest from'  // <-- ADDED THIS LINE
     ];
 
     function hasBlockedText(el) {
@@ -50,6 +53,7 @@
 
     /* ---------------------------------------------------
        DETECT UNWANTED RENDERERS
+       EXACTLY AS YOU HAD IT
     --------------------------------------------------- */
     function isShorts(el) {
         return (
@@ -84,6 +88,7 @@
 
     /* ---------------------------------------------------
        REMOVE
+       EXACTLY AS YOU HAD IT
     --------------------------------------------------- */
     function remove(el) {
         el.setAttribute(REMOVED_FLAG, 'true');
@@ -93,6 +98,7 @@
 
     /* ---------------------------------------------------
        SCAN
+       EXACTLY AS YOU HAD IT
     --------------------------------------------------- */
     function scan(node) {
         if (node.nodeType !== 1) return;
@@ -114,10 +120,27 @@
     }
 
     /* ---------------------------------------------------
-       INIT
+       INIT - WITH MINIMAL, SAFE IMPROVEMENTS
     --------------------------------------------------- */
+
+    // 1. Initial scan
     scan(document.body);
 
+    // 2. SPA Navigation fix - YouTube loads new content without page reload
+    let lastUrl = location.href;
+    const checkForNavigation = () => {
+        const currentUrl = location.href;
+        if (currentUrl !== lastUrl) {
+            lastUrl = currentUrl;
+            // YouTube changed pages, rescan everything
+            scan(document.body);
+        }
+    };
+
+    // Check for navigation every second
+    setInterval(checkForNavigation, 1000);
+
+    // 3. Your original observer - unchanged
     const observer = new MutationObserver(mutations => {
         for (const m of mutations) {
             for (const node of m.addedNodes) {
@@ -130,4 +153,9 @@
         childList: true,
         subtree: true
     });
+
+    // 4. Periodic scan as backup - every 5 seconds
+    setInterval(() => {
+        scan(document.body);
+    }, 5000);
 })();
