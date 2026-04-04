@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         YouTube - Classic Metadata Layout
+// @name         [TEST] YouTube - Classic Metadata Layout
 // @description  Restore old metadata layout with correct font sizing
 // @namespace    http://tampermonkey.net/
 // @icon         https://cdn-icons-png.flaticon.com/64/2504/2504965.png

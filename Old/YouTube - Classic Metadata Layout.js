@@ -4,7 +4,7 @@
 // @namespace    http://tampermonkey.net/
 // @icon         https://cdn-icons-png.flaticon.com/64/2504/2504965.png
 // @supportURL   https://github.com/5tratz/Tampermonkey-Scripts/issues
-// @version      0.0.3
+// @version      0.0.2
 // @author       5tratz
 // @match        https://www.youtube.com/*
 // @license      MIT
@@ -21,57 +21,67 @@
         return path === '/' || path.startsWith('/feed/');
     }
 
-	function fixRows() {
-		if (!isHomepage()) return;
+    function fixRows() {
+        if (!isHomepage()) return;
 
-		const rows = document.querySelectorAll('.ytContentMetadataViewModelMetadataRow');
+        const rows = document.querySelectorAll('.yt-content-metadata-view-model__metadata-row');
 
-		rows.forEach(row => {
-			if (row.dataset.fixed) return;
+        rows.forEach(row => {
+            if (row.dataset.fixed) return;
 
-			const spans = row.querySelectorAll('.ytContentMetadataViewModelMetadataText');
-			if (spans.length < 2) return;
+            const spans = row.querySelectorAll('span');
+            if (spans.length < 2) return;
 
-			let channelEl = spans[0];
-			let viewsEl = spans[1] || null;
-			let dateEl = spans[2] || null;
-			let verifiedIcon = row.querySelector('svg');
+            let channelEl = spans[0];
+            let viewsEl = null;
+            let dateEl = null;
+            let verifiedIcon = row.querySelector('svg');
 
-			if (!channelEl) return;
+            spans.forEach(s => {
+                const text = s.textContent.trim();
 
-			const container = document.createElement('div');
+                if (!viewsEl && /^[\d,.]+[KMB]?$/.test(text)) viewsEl = s;
+                if (!dateEl && /(ago|hour|day|week|month|year)/i.test(text)) dateEl = s;
+            });
 
-			const channelLine = document.createElement('div');
-			channelLine.className = "yt-fix-channel";
-			const channelClone = channelEl.cloneNode(true);
+            if (!channelEl || !viewsEl) return;
 
-			if (verifiedIcon) {
-				const iconClone = verifiedIcon.cloneNode(true);
-				iconClone.style.width = "14px";
-				iconClone.style.height = "14px";
-				iconClone.style.marginLeft = "4px";
-				iconClone.style.verticalAlign = "middle";
-				channelClone.appendChild(iconClone);
-			}
+            const container = document.createElement('div');
 
-			channelLine.appendChild(channelClone);
+            // Channel line
+            const channelLine = document.createElement('div');
+            channelLine.className = "yt-fix-channel";
 
-			const metaLine = document.createElement('div');
-			metaLine.className = "yt-fix-meta";
-			metaLine.textContent = viewsEl
-				? dateEl
-					? `${viewsEl.textContent.trim()} · ${dateEl.textContent.trim()}`
-					: viewsEl.textContent.trim()
-				: "";
+            const channelClone = channelEl.cloneNode(true);
 
-			row.innerHTML = '';
-			container.appendChild(channelLine);
-			container.appendChild(metaLine);
-			row.appendChild(container);
+            // Add verified checkmark cleanly
+            if (verifiedIcon) {
+                const iconClone = verifiedIcon.cloneNode(true);
+                iconClone.style.width = "14px";
+                iconClone.style.height = "14px";
+                iconClone.style.marginLeft = "4px";
+                iconClone.style.verticalAlign = "middle";
+                channelClone.appendChild(iconClone);
+            }
 
-			row.dataset.fixed = "true";
-		});
-	}
+            channelLine.appendChild(channelClone);
+
+            // Metadata line
+            const metaLine = document.createElement('div');
+            metaLine.className = "yt-fix-meta";
+            metaLine.textContent = dateEl
+                ? `${viewsEl.textContent.trim()} · ${dateEl.textContent.trim()}`
+                : viewsEl.textContent.trim();
+
+            // Replace original layout
+            row.innerHTML = '';
+            container.appendChild(channelLine);
+            container.appendChild(metaLine);
+            row.appendChild(container);
+
+            row.dataset.fixed = "true";
+        });
+    }
 
     function removeJunk() {
         if (!isHomepage()) return;
